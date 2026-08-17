@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Business X-Ray</title>
+<meta name="description" content="AI-driven financial diagnostics in 3 minutes.">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #ffffff;
+    --card-bg: #f7f7f8;
+    --card-border: #e8e8ea;
+    --border: #e5e5e8;
+    --text-primary: #1a1a1c;
+    --text-secondary: #55555b;
+    --text-muted: #8a8a90;
+    --bubble-bg: #eef0f2;
+    --bubble-text: #1a1a1c;
+    --shadow: rgba(20, 20, 25, 0.07);
+    --qr-card-bg: #ffffff;
+
+    --blue: #2a78d6;
+    --orange: #eb6834;
+    --green: #0ca30c;
+    --red: #e34948;
+    --green-tint: rgba(12, 163, 12, 0.12);
+    --red-tint: rgba(227, 73, 72, 0.12);
+    --blue-tint: rgba(42, 120, 214, 0.12);
+    --grid-line: rgba(20, 20, 25, 0.08);
+
+    --radius: 14px;
+    --font: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0c0c0e;
+      --card-bg: #1a1a1d;
+      --card-border: #2a2a2e;
+      --border: #29292d;
+      --text-primary: #f2f2f3;
+      --text-secondary: #b7b7bc;
+      --text-muted: #85858c;
+      --bubble-bg: #201f22;
+      --bubble-text: #f2f2f3;
+      --shadow: rgba(0, 0, 0, 0.4);
+      --qr-card-bg: #ffffff;
+      --grid-line: rgba(255, 255, 255, 0.08);
+    }
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text-primary);
+    font-family: var(--font);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    padding: 32px 16px 64px;
+  }
+
+  .app {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  header.hero {
+    text-align: center;
+    margin-bottom: 36px;
+  }
+
+  header.hero h1 {
+    font-size: 1.9rem;
+    font-weight: 800;
+    margin: 0 0 6px;
+    letter-spacing: -0.01em;
+  }
+
+  header.hero p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 1rem;
+  }
+
+  /* ---------- conversation turns ---------- */
+
+  .turn {
+    margin-bottom: 22px;
+  }
+
+  .user-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 14px;
+  }
+
+  .user-question {
+    max-width: 82%;
+    background: var(--bubble-bg);
+    color: var(--bubble-text);
+    padding: 12px 16px;
+    border-radius: 16px 16px 4px 16px;
+    font-size: 0.96rem;
+    line-height: 1.45;
+    box-shadow: 0 1px 2px var(--shadow);
+  }
+
+  /* ---------- scripted reveal animation ---------- */
+
+  [hidden] {
+    display: none !important;
+  }
+
+  .reveal-anim {
+    opacity: 0;
+    transform: translateY(22px);
+    transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .reveal-anim.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .collapse-inner-pad {
+    padding-top: 2px;
+  }
+
+  .ai-message {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--text-primary);
+    margin: 0 0 16px;
+    max-width: 640px;
+  }
+
+  .ai-avatar-row {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .ai-dot {
+    flex-shrink: 0;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--blue), var(--orange));
+    margin-top: 2px;
+  }
+
+  .fade-in {
+    animation: fadeSlideIn 0.5s ease both;
+  }
+
+  @keyframes fadeSlideIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ---------- KPI cards ---------- */
+
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+
+  .kpi-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 18px 16px;
+  }
+
+  .kpi-label {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-weight: 600;
+    margin: 0 0 8px;
+  }
+
+  .kpi-value {
+    font-size: 1.6rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    margin: 0 0 6px;
+  }
+
+  .kpi-change {
+    font-size: 0.82rem;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    border-radius: 20px;
+  }
+
+  .kpi-change.up { color: var(--green); background: var(--green-tint); }
+  .kpi-change.down { color: var(--red); background: var(--red-tint); }
+  .kpi-change.flat { color: var(--text-muted); background: rgba(138, 138, 144, 0.14); }
+
+  /* ---------- tables ---------- */
+
+  .table-scroll {
+    overflow-x: auto;
+    margin: 4px 0 18px;
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+  }
+
+  table.data-table {
+    width: 100%;
+    min-width: 420px;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    background: var(--card-bg);
+  }
+
+  .data-table caption {
+    text-align: left;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-muted);
+    font-weight: 700;
+    padding: 10px 14px 6px;
+  }
+
+  .data-table th, .data-table td {
+    padding: 9px 14px;
+    text-align: right;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+
+  .data-table th:first-child, .data-table td:first-child {
+    text-align: left;
+    color: var(--text-secondary);
+    font-weight: 600;
+  }
+
+  .data-table thead th {
+    color: var(--text-muted);
+    font-weight: 700;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    border-bottom: 1px solid var(--card-border);
+  }
+
+  .data-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  .data-table td.emph {
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .cell-note {
+    display: block;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    font-weight: 400;
+    margin-top: 2px;
+  }
+
+  /* ---------- charts ---------- */
+
+  .chart-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 16px 12px 8px;
+    margin-bottom: 18px;
+  }
+
+  .chart-scroll {
+    overflow-x: auto;
+  }
+
+  .chart-wrap {
+    position: relative;
+    height: 280px;
+    min-width: 460px;
+  }
+
+  .chart-wrap.chart-wrap--compact {
+    min-width: 260px;
+  }
+
+  /* ---------- lever cards (page 4) ---------- */
+
+  .lever-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+
+  .lever-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .lever-card h4 {
+    margin: 0 0 2px;
+    font-size: 1rem;
+  }
+
+  .lever-subtitle {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    font-weight: 700;
+    margin: 0 0 8px;
+  }
+
+  .lever-action {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin: 0 0 12px;
+    line-height: 1.4;
+  }
+
+  .lever-card .table-scroll {
+    margin-bottom: 12px;
+  }
+
+  .lever-card table.data-table {
+    min-width: 0;
+    font-size: 0.78rem;
+  }
+
+  .lever-card .data-table th, .lever-card .data-table td {
+    padding: 6px 8px;
+  }
+
+  tr.mix-row td {
+    background: var(--blue-tint);
+    font-weight: 700;
+  }
+
+  .result-badge {
+    display: inline-block;
+    background: var(--green-tint);
+    color: var(--green);
+    padding: 5px 11px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 0.8rem;
+    margin-bottom: 10px;
+    width: fit-content;
+  }
+
+  .tradeoff-note {
+    margin-top: auto;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    padding-top: 10px;
+    border-top: 1px dashed var(--border);
+    line-height: 1.4;
+  }
+
+  /* ---------- page 5 ---------- */
+
+  .roles-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin: 20px 0 26px;
+  }
+
+  .role-row {
+    display: flex;
+    flex-direction: column;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 24px 22px;
+  }
+
+  .role-row.silicon { border-top: 3px solid var(--blue); }
+  .role-row.carbon { border-top: 3px solid var(--orange); }
+
+  .role-label {
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin: 0 0 2px;
+  }
+
+  .role-sublabel {
+    display: block;
+    font-size: 0.72rem;
+    text-transform: none;
+    letter-spacing: 0;
+    font-weight: 500;
+    color: var(--text-muted);
+    margin: 2px 0 14px;
+  }
+
+  .role-tasks {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 22px;
+  }
+
+  .role-tasks span {
+    display: block;
+    width: fit-content;
+    font-size: 1.02rem;
+    font-weight: 700;
+    background: var(--bubble-bg);
+    color: var(--text-primary);
+    padding: 12px 18px;
+    border-radius: 14px;
+  }
+
+  .role-time-row {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: auto;
+    padding-top: 16px;
+    border-top: 1px dashed var(--border);
+  }
+
+  .role-time-old {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-decoration: line-through;
+    text-decoration-color: var(--red);
+    text-decoration-thickness: 2px;
+    white-space: nowrap;
+  }
+
+  .role-time-old-note {
+    display: block;
+    font-size: 0.68rem;
+    font-weight: 500;
+    text-decoration: none;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  .role-time-arrow {
+    color: var(--text-muted);
+    font-size: 1.2rem;
+  }
+
+  .role-time {
+    flex-shrink: 0;
+    font-weight: 800;
+    font-size: 2.4rem;
+    line-height: 1;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+  }
+
+  .role-row.silicon .role-time { color: var(--blue); }
+  .role-row.carbon .role-time { color: var(--orange); }
+
+  .bottom-line {
+    text-align: center;
+    font-size: 1.3rem;
+    font-weight: 800;
+    line-height: 1.5;
+    max-width: 480px;
+    margin: 8px auto 0;
+    color: var(--text-primary);
+  }
+
+  /* ---------- page 6 contact ---------- */
+
+  .contact {
+    margin-top: 44px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 14px;
+  }
+
+  .contact .name {
+    font-size: 1.05rem;
+    font-weight: 700;
+  }
+
+  .gh-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.9rem;
+    padding: 6px 4px;
+  }
+
+  .gh-link:hover { color: var(--text-primary); }
+
+  .gh-link svg { fill: currentColor; }
+
+  .qr-card {
+    background: var(--qr-card-bg);
+    border-radius: 12px;
+    padding: 10px;
+    box-shadow: 0 1px 3px var(--shadow);
+  }
+
+  .qr-caption {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+  }
+
+  /* ---------- chat input dock ---------- */
+
+  .chat-input-dock {
+    display: flex;
+    justify-content: flex-end;
+    margin: 22px 0 8px;
+  }
+
+  .chat-input-box {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    max-width: 82%;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 22px;
+    padding: 13px 18px;
+    cursor: pointer;
+    box-shadow: 0 1px 3px var(--shadow);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .chat-input-box:hover,
+  .chat-input-box:focus-visible {
+    border-color: var(--blue);
+    outline: none;
+    box-shadow: 0 0 0 3px var(--blue-tint);
+  }
+
+  .chat-cursor {
+    width: 2px;
+    height: 17px;
+    flex-shrink: 0;
+    background: var(--text-primary);
+    animation: chatBlink 1s step-start infinite;
+  }
+
+  .chat-input-box.sent .chat-cursor {
+    animation: none;
+    opacity: 0;
+  }
+
+  @keyframes chatBlink {
+    50% { opacity: 0; }
+  }
+
+  .chat-typed-text {
+    font-size: 0.95rem;
+    line-height: 1.4;
+    color: var(--text-primary);
+  }
+
+  .chat-ghost-text {
+    font-size: 0.95rem;
+    line-height: 1.4;
+    color: var(--text-muted);
+  }
+
+  /* ---------- responsive ---------- */
+
+  @media (max-width: 600px) {
+    .kpi-grid { grid-template-columns: 1fr; }
+    .lever-grid { grid-template-columns: 1fr; }
+    .roles-grid { grid-template-columns: 1fr; }
+    header.hero h1 { font-size: 1.5rem; }
+    .user-question { max-width: 92%; }
+    .chat-input-box { max-width: 92%; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="hero">
+    <h1>Business X-Ray</h1>
+    <p>AI-driven financial diagnostics in 3 minutes</p>
+  </header>
+
+  <div class="conversation">
+
+    <!-- PAGE 1: auto-open, no question -->
+    <section class="turn" id="page-1">
+      <div class="ai-avatar-row fade-in">
+        <div class="ai-dot" aria-hidden="true"></div>
+        <div style="flex:1; min-width:0;">
+          <p class="ai-message">Here's your business snapshot. Users up 50%, revenue flat, profit down 20%. Something is eating your margin.</p>
+          <div class="kpi-grid">
+            <div class="kpi-card">
+              <p class="kpi-label">Users</p>
+              <p class="kpi-value">1,500</p>
+              <span class="kpi-change up">&#9650; +50%</span>
+            </div>
+            <div class="kpi-card">
+              <p class="kpi-label">Revenue</p>
+              <p class="kpi-value">$1.0M</p>
+              <span class="kpi-change flat">&#8213; Flat</span>
+            </div>
+            <div class="kpi-card">
+              <p class="kpi-label">Profit</p>
+              <p class="kpi-value">$400K</p>
+              <span class="kpi-change down">&#9660; -20%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE 2 -->
+    <section class="turn" id="page-2">
+      <div class="user-row reveal-anim" id="user-2" hidden>
+        <div class="user-question">Profit is down 20%. What's causing it?</div>
+      </div>
+      <div class="ai-avatar-row reveal-anim" id="ai-2" hidden>
+        <div class="ai-dot" aria-hidden="true"></div>
+        <div style="flex:1; min-width:0;">
+          <p class="ai-message">The mix shifted. P1 (60% margin) went from 80% to 60% of revenue. P2 (10% margin) grew from 20% to 40%. Revenue stayed flat, profit dropped from 500K to 400K.</p>
+
+          <div class="table-scroll">
+            <table class="data-table">
+              <caption>Product mix, old vs new (in $K)</caption>
+              <thead>
+                <tr><th></th><th>P1 (Old)</th><th>P2 (Old)</th><th>Total (Old)</th><th>P1 (New)</th><th>P2 (New)</th><th>Total (New)</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Revenue</td><td>800</td><td>200</td><td class="emph">1,000</td><td>600</td><td>400</td><td class="emph">1,000</td></tr>
+                <tr><td>Margin %</td><td>60%</td><td>10%</td><td></td><td>60%</td><td>10%</td><td></td></tr>
+                <tr><td>Profit</td><td>480</td><td>20</td><td class="emph">500</td><td>360</td><td>40</td><td class="emph">400</td></tr>
+                <tr><td>Mix %</td><td>80%</td><td>20%</td><td>100%</td><td>60%</td><td>40%</td><td>100%</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="chart-card">
+            <div class="chart-scroll">
+              <div class="chart-wrap chart-wrap--compact">
+                <canvas id="chart-2"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE 3 -->
+    <section class="turn" id="page-3">
+      <div class="user-row reveal-anim" id="user-3" hidden>
+        <div class="user-question">Break down the revenue drivers.</div>
+      </div>
+      <div class="ai-avatar-row reveal-anim" id="ai-3" hidden>
+        <div class="ai-dot" aria-hidden="true"></div>
+        <div style="flex:1; min-width:0;">
+          <p class="ai-message">P1 raised price 20% but lost volume (8 to 5 units). P2 held price, field sales doubled volume (5 to 10). Revenue stayed at 1,000K, but the profitable volume shrank.</p>
+
+          <div class="table-scroll">
+            <table class="data-table">
+              <caption>Revenue drivers, price &times; volume</caption>
+              <thead>
+                <tr><th></th><th>P1 (Old)</th><th>P1 (New)</th><th>P2 (Old)</th><th>P2 (New)</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Price</td><td>100</td><td>120</td><td>40</td><td>40</td></tr>
+                <tr><td>Volume</td><td>8</td><td>5</td><td>5</td><td>10</td></tr>
+                <tr>
+                  <td>Revenue</td>
+                  <td class="emph">800<span class="cell-note">100 &times; 8</span></td>
+                  <td class="emph">600<span class="cell-note">120 &times; 5</span></td>
+                  <td class="emph">200<span class="cell-note">40 &times; 5</span></td>
+                  <td class="emph">400<span class="cell-note">40 &times; 10</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="chart-card">
+            <div class="chart-scroll">
+              <div class="chart-wrap">
+                <canvas id="chart-3"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE 4 -->
+    <section class="turn" id="page-4">
+      <div class="user-row reveal-anim" id="user-4" hidden>
+        <div class="user-question">What can we do about it?</div>
+      </div>
+      <div class="ai-avatar-row reveal-anim" id="ai-4" hidden>
+        <div class="ai-dot" aria-hidden="true"></div>
+        <div style="flex:1; min-width:0;">
+          <p class="ai-message">Two levers. A: switch sales commission from revenue-based to profit-based. Reps push P1, mix returns to 80/20, profit back to 500K. B: cut P1 price to win volume back, raise P2 price to compress demand. Same result, different trade-off. A changes internal incentives. B changes what the customer sees.</p>
+
+          <div class="lever-grid">
+            <div class="lever-card">
+              <h4>Card A: Change Commission</h4>
+              <p class="lever-subtitle">Internal lever: sales ops</p>
+              <p class="lever-action">Commission from revenue-based to profit share</p>
+              <div class="table-scroll">
+                <table class="data-table">
+                  <thead><tr><th></th><th>P1</th><th>P2</th><th>Total</th></tr></thead>
+                  <tbody>
+                    <tr><td>Revenue</td><td>800</td><td>200</td><td class="emph">1,000</td></tr>
+                    <tr><td>Profit</td><td>480</td><td>20</td><td class="emph">500</td></tr>
+                    <tr class="mix-row"><td>Mix</td><td>80%</td><td>20%</td><td>100%</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <span class="result-badge">Profit: $400K &rarr; $500K (+25%)</span>
+              <p class="tradeoff-note">Reps earn less per P2 deal. P2 acquisition may slow.</p>
+            </div>
+
+            <div class="lever-card">
+              <h4>Card B: Adjust Pricing</h4>
+              <p class="lever-subtitle">External lever: customer-facing</p>
+              <p class="lever-action">P1 price cut 10%, P2 price raised 20%</p>
+              <div class="table-scroll">
+                <table class="data-table">
+                  <thead><tr><th></th><th>P1</th><th>P2</th><th>Total</th></tr></thead>
+                  <tbody>
+                    <tr><td>Price</td><td>108</td><td>48</td><td></td></tr>
+                    <tr><td>Volume</td><td>7.4</td><td>4.2</td><td></td></tr>
+                    <tr><td>Revenue</td><td>800</td><td>200</td><td class="emph">1,000</td></tr>
+                    <tr><td>Profit</td><td>480</td><td>20</td><td class="emph">500</td></tr>
+                    <tr class="mix-row"><td>Mix</td><td>80%</td><td>20%</td><td>100%</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <span class="result-badge">Profit: $400K &rarr; $500K (+25%)</span>
+              <p class="tradeoff-note">Customers see price changes. Competitive response risk.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE 5 -->
+    <section class="turn" id="page-5">
+      <div class="user-row reveal-anim" id="user-5" hidden>
+        <div class="user-question">Why does this matter?</div>
+      </div>
+      <div class="ai-avatar-row reveal-anim" id="ai-5" hidden>
+        <div class="ai-dot" aria-hidden="true"></div>
+        <div style="flex:1; min-width:0;">
+          <p class="ai-message">One conversation. From signal to decision.</p>
+
+          <div class="roles-grid">
+            <div class="role-row silicon">
+              <p class="role-label">Silicon Employee<span class="role-sublabel">AI Assistant</span></p>
+              <div class="role-tasks">
+                <span>Found the problem</span>
+                <span>Traced the drivers</span>
+                <span>Ran scenarios</span>
+              </div>
+              <div class="role-time-row">
+                <div class="role-time">Seconds</div>
+              </div>
+            </div>
+            <div class="role-row carbon">
+              <p class="role-label">👩‍💼 Carbon Employee<span class="role-sublabel">Finance Analyst</span></p>
+              <div class="role-tasks">
+                <span>Chose the lever</span>
+                <span>Weighed the trade-offs</span>
+                <span>Made the call</span>
+              </div>
+              <div class="role-time-row">
+                <div class="role-time-old">1 Month<span class="role-time-old-note">before AI</span></div>
+                <span class="role-time-arrow">&rarr;</span>
+                <div class="role-time">Seconds</div>
+              </div>
+            </div>
+          </div>
+
+          <p class="bottom-line">AI deep-dives through conversation.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE 6: reveals automatically after page 5's AI response finishes expanding -->
+    <section class="contact reveal-anim" id="page-6" hidden>
+      <p class="name">Yixuan Jing</p>
+      <a class="gh-link" href="https://github.com/yixuan116" target="_blank" rel="noopener noreferrer">
+        <svg width="18" height="18" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
+        <span>github.com/yixuan116</span>
+      </a>
+      <div class="qr-card">
+        <div id="qrcode"></div>
+      </div>
+      <p class="qr-caption">Scan to connect on LinkedIn</p>
+    </section>
+
+    <!-- simulated chat input: shows the next question as ghost text -->
+    <div class="chat-input-dock reveal-anim" id="chatInputDock" hidden>
+      <div class="chat-input-box" id="chatInputBox" role="button" tabindex="0" aria-label="Continue the conversation">
+        <span class="chat-typed-text" id="chatTypedText"></span><span class="chat-cursor" aria-hidden="true"></span><span class="chat-ghost-text" id="chatGhostText"></span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  function cssVar(name) {
+    return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  }
+
+  var colors = {
+    blue: '#2a78d6',
+    orange: '#eb6834',
+    green: '#0ca30c',
+    red: '#e34948'
+  };
+
+  var segmentLabelPlugin = {
+    id: 'segmentLabels',
+    afterDatasetsDraw: function (chart) {
+      var ctx = chart.ctx;
+      chart.data.datasets.forEach(function (ds, dsIndex) {
+        var meta = chart.getDatasetMeta(dsIndex);
+        meta.data.forEach(function (bar, i) {
+          var value = ds.data[i];
+          if (!value) return;
+          var midY = (bar.y + bar.base) / 2;
+          ctx.save();
+          ctx.fillStyle = '#ffffff';
+          ctx.font = '700 12px system-ui, -apple-system, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(value + '%', bar.x, midY);
+          ctx.restore();
+        });
+      });
+    }
+  };
+
+  var totalLabelPlugin = {
+    id: 'totalLabels',
+    afterDatasetsDraw: function (chart) {
+      var totals = chart.data.totalLabels;
+      if (!totals) return;
+      var ctx = chart.ctx;
+      var lastIndex = chart.data.datasets.length - 1;
+      var meta = chart.getDatasetMeta(lastIndex);
+      meta.data.forEach(function (bar, i) {
+        ctx.save();
+        ctx.fillStyle = cssVar('--text-primary') || '#1a1a1c';
+        ctx.font = '700 13px system-ui, -apple-system, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'bottom';
+        ctx.fillText(totals[i], bar.x, bar.y - 10);
+        ctx.restore();
+      });
+    }
+  };
+
+  function renderChart2() {
+    var ctx = document.getElementById('chart-2').getContext('2d');
+    var muted = cssVar('--text-secondary') || '#55555b';
+    var gridLine = cssVar('--grid-line') || 'rgba(0,0,0,0.08)';
+
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Old', 'New'],
+        totalLabels: ['Profit: $500K', 'Profit: $400K'],
+        datasets: [
+          {
+            label: 'P1 (60% margin)',
+            data: [80, 60],
+            backgroundColor: colors.blue,
+            stack: 'mix',
+            borderRadius: { topLeft: 4, topRight: 4, bottomLeft: 0, bottomRight: 0 },
+            borderSkipped: false,
+            borderColor: cssVar('--card-bg') || '#f7f7f8',
+            borderWidth: { top: 0, left: 0, right: 0, bottom: 2 }
+          },
+          {
+            label: 'P2 (10% margin)',
+            data: [20, 40],
+            backgroundColor: colors.orange,
+            stack: 'mix',
+            borderRadius: { topLeft: 4, topRight: 4, bottomLeft: 4, bottomRight: 4 },
+            borderSkipped: false
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        layout: { padding: { top: 28 } },
+        scales: {
+          x: {
+            stacked: true,
+            grid: { display: false },
+            ticks: { color: muted, font: { weight: 600 } }
+          },
+          y: {
+            stacked: true,
+            min: 0,
+            max: 105,
+            grid: { color: gridLine },
+            ticks: { display: false },
+            border: { display: false }
+          }
+        },
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: { color: muted, usePointStyle: true, boxWidth: 8, padding: 16 }
+          },
+          tooltip: {
+            callbacks: {
+              label: function (c) { return c.dataset.label + ': ' + c.parsed.y + '%'; }
+            }
+          }
+        }
+      },
+      plugins: [segmentLabelPlugin, totalLabelPlugin]
+    });
+  }
+
+  var waterfallLabelPlugin = {
+    id: 'waterfallLabels',
+    afterDatasetsDraw: function (chart) {
+      var labels = chart.data.barLabels;
+      if (!labels) return;
+      var ctx = chart.ctx;
+      var meta = chart.getDatasetMeta(0);
+      meta.data.forEach(function (bar, i) {
+        var topY = Math.min(bar.y, bar.base);
+        ctx.save();
+        ctx.fillStyle = cssVar('--text-primary') || '#1a1a1c';
+        ctx.font = '700 12px system-ui, -apple-system, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'bottom';
+        ctx.fillText(labels[i], bar.x, topY - 8);
+        ctx.restore();
+      });
+    }
+  };
+
+  function renderChart3() {
+    var ctx = document.getElementById('chart-3').getContext('2d');
+    var muted = cssVar('--text-secondary') || '#55555b';
+    var gridLine = cssVar('--grid-line') || 'rgba(0,0,0,0.08)';
+
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Old Revenue', 'Price Effect', 'Volume Effect', 'Mix Effect', 'New Revenue'],
+        barLabels: ['1,000', '+160', '-100', '-60', '1,000'],
+        datasets: [
+          {
+            label: 'Revenue ($K)',
+            data: [
+              [0, 1000],
+              [1000, 1160],
+              [1060, 1160],
+              [1000, 1060],
+              [0, 1000]
+            ],
+            backgroundColor: [colors.blue, colors.green, colors.red, colors.red, colors.blue],
+            borderRadius: 4,
+            borderSkipped: false,
+            maxBarThickness: 64
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        layout: { padding: { top: 28 } },
+        scales: {
+          x: {
+            grid: { display: false },
+            ticks: { color: muted, font: { weight: 600, size: 11 } }
+          },
+          y: {
+            min: 0,
+            max: 1260,
+            grid: { color: gridLine },
+            ticks: { display: false },
+            border: { display: false }
+          }
+        },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: function (c) {
+                var v = c.raw;
+                return 'Value: ' + (v[1] - v[0]) + 'K (running total ' + v[1] + 'K)';
+              }
+            }
+          }
+        }
+      },
+      plugins: [waterfallLabelPlugin]
+    });
+  }
+
+  document.getElementById('qrcode') && new QRCode(document.getElementById('qrcode'), {
+    text: 'https://www.linkedin.com/in/yixuan-jing/',
+    width: 120,
+    height: 120,
+    colorDark: '#000000',
+    colorLight: '#ffffff',
+    correctLevel: QRCode.CorrectLevel.M
+  });
+
+  /* ---------- progressive conversation flow ---------- */
+
+  var steps = [2, 3, 4, 5];
+  var questionText = {
+    2: { preview: 'Profit is down...', full: "Profit is down 20%. What's causing it?" },
+    3: { preview: 'Break down the...', full: 'Break down the revenue drivers.' },
+    4: { preview: 'What can we...', full: 'What can we do about it?' },
+    5: { preview: 'Why does this...', full: 'Why does this matter?' }
+  };
+  var TYPE_SPEED_MS = 30;
+
+  var stepIndex = 0;
+  var dockLocked = true;
+  var typeTimer = null;
+
+  var dock = document.getElementById('chatInputDock');
+  var dockBox = document.getElementById('chatInputBox');
+  var ghostEl = document.getElementById('chatGhostText');
+  var typedEl = document.getElementById('chatTypedText');
+
+  function scrollToLatest() {
+    requestAnimationFrame(function () {
+      window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' });
+    });
+  }
+
+  function reveal(el, onRevealed, onSettled) {
+    el.hidden = false;
+    void el.offsetWidth; // force reflow so the transition actually runs
+    el.classList.add('show');
+    scrollToLatest();
+    if (onRevealed) onRevealed();
+    if (onSettled) setTimeout(onSettled, 520);
+  }
+
+  function hideDock() {
+    dock.classList.remove('show');
+    dock.hidden = true;
+  }
+
+  function showNextPrompt() {
+    if (stepIndex >= steps.length) {
+      setTimeout(function () {
+        reveal(document.getElementById('page-6'), null, null);
+      }, 250);
+      return;
+    }
+    var id = steps[stepIndex];
+    dockBox.classList.remove('sent');
+    typedEl.textContent = '';
+    ghostEl.textContent = questionText[id].preview;
+    dockLocked = false;
+    reveal(dock, null, null);
+  }
+
+  function typeSentence(text, onDone) {
+    ghostEl.textContent = '';
+    typedEl.textContent = '';
+    var i = 0;
+    typeTimer = setInterval(function () {
+      i++;
+      typedEl.textContent = text.slice(0, i);
+      scrollToLatest();
+      if (i >= text.length) {
+        clearInterval(typeTimer);
+        typeTimer = null;
+        setTimeout(onDone, 300);
+      }
+    }, TYPE_SPEED_MS);
+  }
+
+  function activateDock() {
+    if (dockLocked || dock.hidden) return;
+    dockLocked = true;
+    var id = steps[stepIndex];
+
+    typeSentence(questionText[id].full, function () {
+      dockBox.classList.add('sent');
+      hideDock();
+      var userRow = document.getElementById('user-' + id);
+
+      reveal(userRow, null, function () {
+        setTimeout(function () {
+          var aiTurn = document.getElementById('ai-' + id);
+          reveal(
+            aiTurn,
+            function () {
+              if (id === 2) renderChart2();
+              if (id === 3) renderChart3();
+            },
+            function () {
+              stepIndex++;
+              showNextPrompt();
+            }
+          );
+        }, 300);
+      });
+    });
+  }
+
+  dockBox.addEventListener('click', activateDock);
+
+  window.addEventListener('keydown', function (e) {
+    if (dockLocked || dock.hidden) return;
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    var ignoredKeys = ['Shift', 'Tab', 'Escape', 'CapsLock', 'Meta', 'Control', 'Alt'];
+    if (ignoredKeys.indexOf(e.key) !== -1) return;
+    if (e.key === ' ') e.preventDefault();
+    activateDock();
+  });
+
+  setTimeout(showNextPrompt, 900);
+</script>
+</body>
+</html>
