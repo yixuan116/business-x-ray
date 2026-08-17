@@ -16,23 +16,13 @@ after that step.
 
 **Page 1, the snapshot loads automatically**
 
-![Page 1](screenshots/page-1.png)
-
 **Page 2, what's causing the drop**
-
-![Page 2](screenshots/page-2.png)
 
 **Page 3, the revenue drivers**
 
-![Page 3](screenshots/page-3.png)
-
 **Page 4, the two levers**
 
-![Page 4](screenshots/page-4.png)
-
 **Page 5, why it matters**
-
-![Page 5](screenshots/page-5.png)
 
 **Page 6, contact, revealed automatically at the end**
 
