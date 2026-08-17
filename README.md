@@ -11,22 +11,11 @@ Pure HTML, CSS, and JavaScript. No build step, no frameworks. Charts via [Chart.
 
 ## Screenshots
 
-The conversation unfolds one question at a time. Each screenshot below is the page state
-after that step.
+The conversation unfolds one question at a time, from the opening snapshot through the
+two levers to the contact section. This full-page capture, taken after every step has
+been revealed, covers the whole flow in one image.
 
-**Page 1, the snapshot loads automatically**
-
-**Page 2, what's causing the drop**
-
-**Page 3, the revenue drivers**
-
-**Page 4, the two levers**
-
-**Page 5, why it matters**
-
-**Page 6, contact, revealed automatically at the end**
-
-![Page 6](screenshots/page-6.png)
+![Full conversation, all six steps](screenshots/page-6.png)
 
 ## Structure
 
