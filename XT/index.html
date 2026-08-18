@@ -111,6 +111,7 @@
     font-size: 0.96rem;
     line-height: 1.45;
     box-shadow: 0 1px 2px var(--shadow);
+    cursor: pointer;
   }
 
   /* ---------- scripted reveal animation ---------- */
@@ -130,10 +131,6 @@
     transform: translateY(0);
   }
 
-  .collapse-inner-pad {
-    padding-top: 2px;
-  }
-
   .ai-message {
     font-size: 1rem;
     line-height: 1.6;
@@ -146,6 +143,7 @@
     display: flex;
     gap: 10px;
     align-items: flex-start;
+    position: relative;
   }
 
   .ai-dot {
@@ -155,6 +153,60 @@
     border-radius: 50%;
     background: linear-gradient(135deg, var(--blue), var(--orange));
     margin-top: 2px;
+  }
+
+  .ai-content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .ai-content--collapsible {
+    padding-right: 34px;
+  }
+
+  /* ---------- collapse after expand ---------- */
+
+  .ai-collapse-shell {
+    display: grid;
+    grid-template-rows: 1fr;
+    transition: grid-template-rows 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .ai-collapse-shell.collapsed {
+    grid-template-rows: 0fr;
+  }
+
+  .ai-collapse-inner {
+    overflow: hidden;
+    min-height: 0;
+  }
+
+  .collapse-btn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: var(--bubble-bg);
+    color: var(--text-secondary);
+    border-radius: 50%;
+    cursor: pointer;
+    padding: 0;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+
+  .collapse-btn:hover {
+    background: var(--card-border);
+    color: var(--text-primary);
+  }
+
+  .collapse-btn svg {
+    width: 14px;
+    height: 14px;
   }
 
   .fade-in {
@@ -620,8 +672,8 @@
     <section class="turn" id="page-1">
       <div class="ai-avatar-row fade-in">
         <div class="ai-dot" aria-hidden="true"></div>
-        <div style="flex:1; min-width:0;">
-          <p class="ai-message">Here's your business snapshot. Users up 50%, revenue flat, profit down 20%. Something is eating your margin.</p>
+        <div class="ai-content">
+          <p class="ai-message">Here's your business snapshot. Users up 50%, revenue up 25%, but profit hasn't moved. Something is eating your margin.</p>
           <div class="kpi-grid">
             <div class="kpi-card">
               <p class="kpi-label">Users</p>
@@ -630,13 +682,13 @@
             </div>
             <div class="kpi-card">
               <p class="kpi-label">Revenue</p>
-              <p class="kpi-value">$1.0M</p>
-              <span class="kpi-change flat">&#8213; Flat</span>
+              <p class="kpi-value">$1,000K</p>
+              <span class="kpi-change up">&#9650; +25%</span>
             </div>
             <div class="kpi-card">
               <p class="kpi-label">Profit</p>
               <p class="kpi-value">$400K</p>
-              <span class="kpi-change down">&#9660; -20%</span>
+              <span class="kpi-change flat">&#8213; Flat</span>
             </div>
           </div>
         </div>
@@ -646,32 +698,40 @@
     <!-- PAGE 2 -->
     <section class="turn" id="page-2">
       <div class="user-row reveal-anim" id="user-2" hidden>
-        <div class="user-question">Profit is down 20%. What's causing it?</div>
+        <div class="user-question" data-page="2">Where did the margin go?</div>
       </div>
-      <div class="ai-avatar-row reveal-anim" id="ai-2" hidden>
-        <div class="ai-dot" aria-hidden="true"></div>
-        <div style="flex:1; min-width:0;">
-          <p class="ai-message">The mix shifted. P1 (60% margin) went from 80% to 60% of revenue. P2 (10% margin) grew from 20% to 40%. Revenue stayed flat, profit dropped from 500K to 400K.</p>
+      <div class="ai-collapse-shell" id="collapseShell-2">
+        <div class="ai-collapse-inner">
+          <div class="ai-avatar-row reveal-anim" id="ai-2" hidden>
+            <div class="ai-dot" aria-hidden="true"></div>
+            <div class="ai-content ai-content--collapsible">
+              <button class="collapse-btn" id="collapseBtn-2" data-page="2" type="button" aria-label="Collapse this response">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"></polyline></svg>
+              </button>
+              <p class="ai-message">The mix shifted. P1 (60% margin) went from 80% to 60% of revenue. P2 (10% margin) grew from 20% to 40%. Revenue grew 25% to $1,000K, but profit stayed flat at $400K as blended margin compressed from 50% to 40%.</p>
 
-          <div class="table-scroll">
-            <table class="data-table">
-              <caption>Product mix, old vs new (in $K)</caption>
-              <thead>
-                <tr><th></th><th>P1 (Old)</th><th>P2 (Old)</th><th>Total (Old)</th><th>P1 (New)</th><th>P2 (New)</th><th>Total (New)</th></tr>
-              </thead>
-              <tbody>
-                <tr><td>Revenue</td><td>800</td><td>200</td><td class="emph">1,000</td><td>600</td><td>400</td><td class="emph">1,000</td></tr>
-                <tr><td>Margin %</td><td>60%</td><td>10%</td><td></td><td>60%</td><td>10%</td><td></td></tr>
-                <tr><td>Profit</td><td>480</td><td>20</td><td class="emph">500</td><td>360</td><td>40</td><td class="emph">400</td></tr>
-                <tr><td>Mix %</td><td>80%</td><td>20%</td><td>100%</td><td>60%</td><td>40%</td><td>100%</td></tr>
-              </tbody>
-            </table>
-          </div>
+              <div class="table-scroll">
+                <table class="data-table">
+                  <caption>Full P&amp;L, Q1 vs Q2 (in $K)</caption>
+                  <thead>
+                    <tr><th></th><th>P1 (Q1)</th><th>P2 (Q1)</th><th>Total (Q1)</th><th>P1 (Q2)</th><th>P2 (Q2)</th><th>Total (Q2)</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>Revenue</td><td>640</td><td>160</td><td class="emph">800</td><td>600</td><td>400</td><td class="emph">1,000</td></tr>
+                    <tr><td>Cost</td><td>256</td><td>144</td><td class="emph">400</td><td>240</td><td>360</td><td class="emph">600</td></tr>
+                    <tr><td>Profit</td><td>384</td><td>16</td><td class="emph">400</td><td>360</td><td>40</td><td class="emph">400</td></tr>
+                    <tr><td>Margin %</td><td>60%</td><td>10%</td><td>50%</td><td>60%</td><td>10%</td><td>40%</td></tr>
+                    <tr><td>Mix %</td><td>80%</td><td>20%</td><td>100%</td><td>60%</td><td>40%</td><td>100%</td></tr>
+                  </tbody>
+                </table>
+              </div>
 
-          <div class="chart-card">
-            <div class="chart-scroll">
-              <div class="chart-wrap chart-wrap--compact">
-                <canvas id="chart-2"></canvas>
+              <div class="chart-card">
+                <div class="chart-scroll">
+                  <div class="chart-wrap chart-wrap--compact">
+                    <canvas id="chart-2"></canvas>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -682,37 +742,44 @@
     <!-- PAGE 3 -->
     <section class="turn" id="page-3">
       <div class="user-row reveal-anim" id="user-3" hidden>
-        <div class="user-question">Break down the revenue drivers.</div>
+        <div class="user-question" data-page="3">Break down the revenue drivers.</div>
       </div>
-      <div class="ai-avatar-row reveal-anim" id="ai-3" hidden>
-        <div class="ai-dot" aria-hidden="true"></div>
-        <div style="flex:1; min-width:0;">
-          <p class="ai-message">P1 raised price 20% but lost volume (8 to 5 units). P2 held price, field sales doubled volume (5 to 10). Revenue stayed at 1,000K, but the profitable volume shrank.</p>
+      <div class="ai-collapse-shell" id="collapseShell-3">
+        <div class="ai-collapse-inner">
+          <div class="ai-avatar-row reveal-anim" id="ai-3" hidden>
+            <div class="ai-dot" aria-hidden="true"></div>
+            <div class="ai-content ai-content--collapsible">
+              <button class="collapse-btn" id="collapseBtn-3" data-page="3" type="button" aria-label="Collapse this response">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"></polyline></svg>
+              </button>
+              <p class="ai-message">P1 raised price 50% but lost volume (8 to 5 units). P2 raised price too, and field sales doubled volume (5 to 10). Revenue grew from 800K to 1,000K, but the extra revenue landed in the lower-margin product, so profit stayed flat.</p>
 
-          <div class="table-scroll">
-            <table class="data-table">
-              <caption>Revenue drivers, price &times; volume</caption>
-              <thead>
-                <tr><th></th><th>P1 (Old)</th><th>P1 (New)</th><th>P2 (Old)</th><th>P2 (New)</th></tr>
-              </thead>
-              <tbody>
-                <tr><td>Price</td><td>100</td><td>120</td><td>40</td><td>40</td></tr>
-                <tr><td>Volume</td><td>8</td><td>5</td><td>5</td><td>10</td></tr>
-                <tr>
-                  <td>Revenue</td>
-                  <td class="emph">800<span class="cell-note">100 &times; 8</span></td>
-                  <td class="emph">600<span class="cell-note">120 &times; 5</span></td>
-                  <td class="emph">200<span class="cell-note">40 &times; 5</span></td>
-                  <td class="emph">400<span class="cell-note">40 &times; 10</span></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+              <div class="table-scroll">
+                <table class="data-table">
+                  <caption>Revenue drivers, price &times; volume</caption>
+                  <thead>
+                    <tr><th></th><th>P1 (Q1)</th><th>P1 (Q2)</th><th>P2 (Q1)</th><th>P2 (Q2)</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>Price</td><td>80</td><td>120</td><td>32</td><td>40</td></tr>
+                    <tr><td>Volume</td><td>8</td><td>5</td><td>5</td><td>10</td></tr>
+                    <tr>
+                      <td>Revenue</td>
+                      <td class="emph">640<span class="cell-note">80 &times; 8</span></td>
+                      <td class="emph">600<span class="cell-note">120 &times; 5</span></td>
+                      <td class="emph">160<span class="cell-note">32 &times; 5</span></td>
+                      <td class="emph">400<span class="cell-note">40 &times; 10</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
 
-          <div class="chart-card">
-            <div class="chart-scroll">
-              <div class="chart-wrap">
-                <canvas id="chart-3"></canvas>
+              <div class="chart-card">
+                <div class="chart-scroll">
+                  <div class="chart-wrap">
+                    <canvas id="chart-3"></canvas>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -723,50 +790,57 @@
     <!-- PAGE 4 -->
     <section class="turn" id="page-4">
       <div class="user-row reveal-anim" id="user-4" hidden>
-        <div class="user-question">What can we do about it?</div>
+        <div class="user-question" data-page="4">What can we do about it?</div>
       </div>
-      <div class="ai-avatar-row reveal-anim" id="ai-4" hidden>
-        <div class="ai-dot" aria-hidden="true"></div>
-        <div style="flex:1; min-width:0;">
-          <p class="ai-message">Two levers. A: switch sales commission from revenue-based to profit-based. Reps push P1, mix returns to 80/20, profit back to 500K. B: cut P1 price to win volume back, raise P2 price to compress demand. Same result, different trade-off. A changes internal incentives. B changes what the customer sees.</p>
+      <div class="ai-collapse-shell" id="collapseShell-4">
+        <div class="ai-collapse-inner">
+          <div class="ai-avatar-row reveal-anim" id="ai-4" hidden>
+            <div class="ai-dot" aria-hidden="true"></div>
+            <div class="ai-content ai-content--collapsible">
+              <button class="collapse-btn" id="collapseBtn-4" data-page="4" type="button" aria-label="Collapse this response">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"></polyline></svg>
+              </button>
+              <p class="ai-message">Two levers. A: switch sales commission from revenue-based to profit-based. Reps push P1, mix returns to 80/20, profit rises to $500K. B: cut P1 price to win volume back, raise P2 price to compress demand. Same result, different trade-off. A changes internal incentives. B changes what the customer sees.</p>
 
-          <div class="lever-grid">
-            <div class="lever-card">
-              <h4>Card A: Change Commission</h4>
-              <p class="lever-subtitle">Internal lever: sales ops</p>
-              <p class="lever-action">Commission from revenue-based to profit share</p>
-              <div class="table-scroll">
-                <table class="data-table">
-                  <thead><tr><th></th><th>P1</th><th>P2</th><th>Total</th></tr></thead>
-                  <tbody>
-                    <tr><td>Revenue</td><td>800</td><td>200</td><td class="emph">1,000</td></tr>
-                    <tr><td>Profit</td><td>480</td><td>20</td><td class="emph">500</td></tr>
-                    <tr class="mix-row"><td>Mix</td><td>80%</td><td>20%</td><td>100%</td></tr>
-                  </tbody>
-                </table>
-              </div>
-              <span class="result-badge">Profit: $400K &rarr; $500K (+25%)</span>
-              <p class="tradeoff-note">Reps earn less per P2 deal. P2 acquisition may slow.</p>
-            </div>
+              <div class="lever-grid">
+                <div class="lever-card">
+                  <h4>Card A: Change Commission</h4>
+                  <p class="lever-subtitle">Internal lever: sales ops</p>
+                  <p class="lever-action">Commission from revenue-based to profit share</p>
+                  <div class="table-scroll">
+                    <table class="data-table">
+                      <thead><tr><th></th><th>P1</th><th>P2</th><th>Total</th></tr></thead>
+                      <tbody>
+                        <tr><td>Revenue</td><td>800</td><td>200</td><td class="emph">1,000</td></tr>
+                        <tr><td>Profit</td><td>480</td><td>20</td><td class="emph">500</td></tr>
+                        <tr class="mix-row"><td>Mix</td><td>80%</td><td>20%</td><td>100%</td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <span class="result-badge">Profit: $400K &rarr; $500K (+25%)</span>
+                  <p class="tradeoff-note">Reps earn less per P2 deal. P2 acquisition may slow.</p>
+                </div>
 
-            <div class="lever-card">
-              <h4>Card B: Adjust Pricing</h4>
-              <p class="lever-subtitle">External lever: customer-facing</p>
-              <p class="lever-action">P1 price cut 10%, P2 price raised 20%</p>
-              <div class="table-scroll">
-                <table class="data-table">
-                  <thead><tr><th></th><th>P1</th><th>P2</th><th>Total</th></tr></thead>
-                  <tbody>
-                    <tr><td>Price</td><td>108</td><td>48</td><td></td></tr>
-                    <tr><td>Volume</td><td>7.4</td><td>4.2</td><td></td></tr>
-                    <tr><td>Revenue</td><td>800</td><td>200</td><td class="emph">1,000</td></tr>
-                    <tr><td>Profit</td><td>480</td><td>20</td><td class="emph">500</td></tr>
-                    <tr class="mix-row"><td>Mix</td><td>80%</td><td>20%</td><td>100%</td></tr>
-                  </tbody>
-                </table>
+                <div class="lever-card">
+                  <h4>Card B: Adjust Pricing</h4>
+                  <p class="lever-subtitle">External lever: customer-facing</p>
+                  <p class="lever-action">P1 price cut 10%, P2 price raised 20%</p>
+                  <div class="table-scroll">
+                    <table class="data-table">
+                      <thead><tr><th></th><th>P1</th><th>P2</th><th>Total</th></tr></thead>
+                      <tbody>
+                        <tr><td>Price</td><td>108</td><td>48</td><td></td></tr>
+                        <tr><td>Volume</td><td>7.4</td><td>4.2</td><td></td></tr>
+                        <tr><td>Revenue</td><td>800</td><td>200</td><td class="emph">1,000</td></tr>
+                        <tr><td>Profit</td><td>480</td><td>20</td><td class="emph">500</td></tr>
+                        <tr class="mix-row"><td>Mix</td><td>80%</td><td>20%</td><td>100%</td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <span class="result-badge">Profit: $400K &rarr; $500K (+25%)</span>
+                  <p class="tradeoff-note">Customers see price changes. Competitive response risk.</p>
+                </div>
               </div>
-              <span class="result-badge">Profit: $400K &rarr; $500K (+25%)</span>
-              <p class="tradeoff-note">Customers see price changes. Competitive response risk.</p>
             </div>
           </div>
         </div>
@@ -776,41 +850,48 @@
     <!-- PAGE 5 -->
     <section class="turn" id="page-5">
       <div class="user-row reveal-anim" id="user-5" hidden>
-        <div class="user-question">Why does this matter?</div>
+        <div class="user-question" data-page="5">Why does this matter?</div>
       </div>
-      <div class="ai-avatar-row reveal-anim" id="ai-5" hidden>
-        <div class="ai-dot" aria-hidden="true"></div>
-        <div style="flex:1; min-width:0;">
-          <p class="ai-message">One conversation. From signal to decision.</p>
+      <div class="ai-collapse-shell" id="collapseShell-5">
+        <div class="ai-collapse-inner">
+          <div class="ai-avatar-row reveal-anim" id="ai-5" hidden>
+            <div class="ai-dot" aria-hidden="true"></div>
+            <div class="ai-content ai-content--collapsible">
+              <button class="collapse-btn" id="collapseBtn-5" data-page="5" type="button" aria-label="Collapse this response">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"></polyline></svg>
+              </button>
+              <p class="ai-message">One conversation. From signal to decision.</p>
 
-          <div class="roles-grid">
-            <div class="role-row silicon">
-              <p class="role-label">Silicon Employee<span class="role-sublabel">AI Assistant</span></p>
-              <div class="role-tasks">
-                <span>Found the problem</span>
-                <span>Traced the drivers</span>
-                <span>Ran scenarios</span>
+              <div class="roles-grid">
+                <div class="role-row silicon">
+                  <p class="role-label">Silicon Employee<span class="role-sublabel">AI Assistant</span></p>
+                  <div class="role-tasks">
+                    <span>Found the problem</span>
+                    <span>Traced the drivers</span>
+                    <span>Ran scenarios</span>
+                  </div>
+                  <div class="role-time-row">
+                    <div class="role-time">Seconds</div>
+                  </div>
+                </div>
+                <div class="role-row carbon">
+                  <p class="role-label">👩‍💼 Carbon Employee<span class="role-sublabel">Finance Analyst</span></p>
+                  <div class="role-tasks">
+                    <span>Chose the lever</span>
+                    <span>Weighed the trade-offs</span>
+                    <span>Made the call</span>
+                  </div>
+                  <div class="role-time-row">
+                    <div class="role-time-old">1 Month<span class="role-time-old-note">before AI</span></div>
+                    <span class="role-time-arrow">&rarr;</span>
+                    <div class="role-time">Seconds</div>
+                  </div>
+                </div>
               </div>
-              <div class="role-time-row">
-                <div class="role-time">Seconds</div>
-              </div>
-            </div>
-            <div class="role-row carbon">
-              <p class="role-label">👩‍💼 Carbon Employee<span class="role-sublabel">Finance Analyst</span></p>
-              <div class="role-tasks">
-                <span>Chose the lever</span>
-                <span>Weighed the trade-offs</span>
-                <span>Made the call</span>
-              </div>
-              <div class="role-time-row">
-                <div class="role-time-old">1 Month<span class="role-time-old-note">before AI</span></div>
-                <span class="role-time-arrow">&rarr;</span>
-                <div class="role-time">Seconds</div>
-              </div>
+
+              <p class="bottom-line">AI deep-dives through conversation.</p>
             </div>
           </div>
-
-          <p class="bottom-line">AI deep-dives through conversation.</p>
         </div>
       </div>
     </section>
@@ -900,8 +981,8 @@
     new Chart(ctx, {
       type: 'bar',
       data: {
-        labels: ['Old', 'New'],
-        totalLabels: ['Profit: $500K', 'Profit: $400K'],
+        labels: ['Q1', 'Q2'],
+        totalLabels: ['Margin: 50%', 'Margin: 40%'],
         datasets: [
           {
             label: 'P1 (60% margin)',
@@ -986,16 +1067,16 @@
     new Chart(ctx, {
       type: 'bar',
       data: {
-        labels: ['Old Revenue', 'Price Effect', 'Volume Effect', 'Mix Effect', 'New Revenue'],
-        barLabels: ['1,000', '+160', '-100', '-60', '1,000'],
+        labels: ['Q1 Revenue', 'Price Effect', 'Volume Effect', 'Mix Effect', 'Q2 Revenue'],
+        barLabels: ['800', '+360', '-80', '-80', '1,000'],
         datasets: [
           {
             label: 'Revenue ($K)',
             data: [
-              [0, 1000],
-              [1000, 1160],
-              [1060, 1160],
-              [1000, 1060],
+              [0, 800],
+              [800, 1160],
+              [1080, 1160],
+              [1000, 1080],
               [0, 1000]
             ],
             backgroundColor: [colors.blue, colors.green, colors.red, colors.red, colors.blue],
@@ -1051,10 +1132,10 @@
 
   var steps = [2, 3, 4, 5];
   var questionText = {
-    2: { preview: 'Profit is down...', full: "Profit is down 20%. What's causing it?" },
-    3: { preview: 'Break down the...', full: 'Break down the revenue drivers.' },
-    4: { preview: 'What can we...', full: 'What can we do about it?' },
-    5: { preview: 'Why does this...', full: 'Why does this matter?' }
+    2: { preview: 'Where...', full: 'Where did the margin go?' },
+    3: { preview: 'Break...', full: 'Break down the revenue drivers.' },
+    4: { preview: 'What...', full: 'What can we do about it?' },
+    5: { preview: 'Why...', full: 'Why does this matter?' }
   };
   var TYPE_SPEED_MS = 30;
 
@@ -1148,6 +1229,24 @@
   }
 
   dockBox.addEventListener('click', activateDock);
+
+  function toggleCollapse(id) {
+    var shell = document.getElementById('collapseShell-' + id);
+    if (!shell) return;
+    shell.classList.toggle('collapsed');
+  }
+
+  document.querySelectorAll('.user-question[data-page]').forEach(function (el) {
+    el.addEventListener('click', function () {
+      toggleCollapse(el.getAttribute('data-page'));
+    });
+  });
+
+  document.querySelectorAll('.collapse-btn[data-page]').forEach(function (el) {
+    el.addEventListener('click', function () {
+      toggleCollapse(el.getAttribute('data-page'));
+    });
+  });
 
   window.addEventListener('keydown', function (e) {
     if (dockLocked || dock.hidden) return;
