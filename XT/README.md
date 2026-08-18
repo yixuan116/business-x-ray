@@ -23,8 +23,9 @@ been revealed, covers the whole flow in one image.
 business-x-ray/
   XT/
     index.html        the complete demo, one file
-  screenshots/
-  README.md
+    Pictures/          QR code images used on the contact section
+    screenshots/
+    README.md
 ```
 
 ## Running locally
