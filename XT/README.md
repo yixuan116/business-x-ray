@@ -1,9 +1,10 @@
 # Business X-Ray
 
-AI-driven financial diagnostics in 3 minutes. A single-page, chat-style demo that walks
-through a business problem (profit down 20% despite user growth), traces the drivers with
-tables and charts, and lays out two levers to fix it, one turn at a time, styled like a
-live conversation with an AI assistant.
+AI-driven financial diagnostics in a few minutes. A single-page, chat-style demo that opens
+on a gross profit miss (down 15% despite flat revenue), traces it to a product mix shift
+with a price times volume breakdown, then walks through three fix options: one ruled out
+live, and two priced out with waterfall charts, including an interactive breakeven price
+slider. One turn at a time, styled like a live conversation with an AI assistant.
 
 Pure HTML, CSS, and JavaScript. No build step, no frameworks. Charts via [Chart.js](https://www.chartjs.org/).
 
@@ -11,11 +12,40 @@ Pure HTML, CSS, and JavaScript. No build step, no frameworks. Charts via [Chart.
 
 ## Screenshots
 
-The conversation unfolds one question at a time, from the opening snapshot through the
-two levers to the contact section. This full-page capture, taken after every step has
-been revealed, covers the whole flow in one image.
+The conversation unfolds one question at a time. Each screenshot below is the page state
+after that step, expanded down through the prior ones.
 
-![Full conversation, all six steps](screenshots/page-6.png)
+**Page 1, the snapshot loads automatically**
+
+![Page 1](screenshots/page-1.png)
+
+**Page 2, per-unit profit by product line**
+
+![Page 2](screenshots/page-2.png)
+
+**Page 3, Q1 versus Q2 mix shift**
+
+![Page 3](screenshots/page-3.png)
+
+**Page 4, price times volume drivers**
+
+![Page 4](screenshots/page-4.png)
+
+**Page 5, three options, Raise Price ruled out on click**
+
+![Page 5](screenshots/page-5.png)
+
+**Page 6, Option B: promotional pricing, with an interactive breakeven price slider**
+
+![Page 6](screenshots/page-6.png)
+
+**Page 7, Option C: change sales commission**
+
+![Page 7](screenshots/page-7.png)
+
+**Page 8, wrap up and contact**
+
+![Page 8](screenshots/page-8.png)
 
 ## Structure
 

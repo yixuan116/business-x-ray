@@ -380,6 +380,181 @@
     min-width: 580px;
   }
 
+  /* ---------- breakeven slider (page 6) ---------- */
+
+  .breakeven-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 20px 18px 18px;
+    margin-bottom: 18px;
+  }
+
+  .breakeven-title {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0 0 20px;
+    line-height: 1.4;
+  }
+
+  .breakeven-track-wrap {
+    position: relative;
+    height: 44px;
+    margin: 0 4px 6px;
+  }
+
+  .breakeven-track {
+    position: absolute;
+    top: 18px;
+    left: 0;
+    right: 0;
+    height: 8px;
+    border-radius: 4px;
+    background: var(--red-tint);
+    overflow: hidden;
+  }
+
+  .breakeven-track-fill {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--green-tint);
+  }
+
+  .breakeven-marker {
+    position: absolute;
+    top: 0;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    pointer-events: none;
+  }
+
+  .breakeven-marker-label {
+    font-size: 0.6rem;
+    font-weight: 800;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    margin-bottom: 3px;
+  }
+
+  .breakeven-marker-line {
+    width: 2px;
+    height: 12px;
+    background: var(--text-secondary);
+  }
+
+  .breakeven-slider {
+    position: absolute;
+    top: 12px;
+    left: 0;
+    width: 100%;
+    height: 20px;
+    margin: 0;
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    cursor: pointer;
+  }
+
+  .breakeven-slider::-webkit-slider-runnable-track {
+    height: 8px;
+    background: transparent;
+  }
+
+  .breakeven-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--blue);
+    border: 3px solid var(--card-bg);
+    box-shadow: 0 1px 4px var(--shadow);
+    cursor: pointer;
+    margin-top: -6px;
+  }
+
+  .breakeven-slider::-moz-range-track {
+    height: 8px;
+    background: transparent;
+  }
+
+  .breakeven-slider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border: 3px solid var(--card-bg);
+    border-radius: 50%;
+    background: var(--blue);
+    box-shadow: 0 1px 4px var(--shadow);
+    cursor: pointer;
+  }
+
+  .breakeven-scale {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.68rem;
+    color: var(--text-muted);
+    margin: 0 4px 18px;
+  }
+
+  .breakeven-readout {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .breakeven-stat {
+    flex: 1;
+    min-width: 78px;
+    text-align: center;
+  }
+
+  .breakeven-stat-label {
+    display: block;
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--text-muted);
+    margin: 0 0 4px;
+  }
+
+  .breakeven-stat-value {
+    display: block;
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: var(--text-primary);
+  }
+
+  .breakeven-status {
+    margin: 16px 0 0;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-align: center;
+    line-height: 1.4;
+  }
+
+  .breakeven-status.positive {
+    background: var(--green-tint);
+    color: var(--green);
+  }
+
+  .breakeven-status.negative {
+    background: var(--red-tint);
+    color: var(--red);
+  }
+
+  .breakeven-status.neutral {
+    background: var(--card-bg);
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+  }
+
   /* ---------- note line and Or divider ---------- */
 
   .note-line {
@@ -756,7 +931,7 @@
             </div>
             <div class="kpi-card">
               <p class="kpi-label">Revenue</p>
-              <p class="kpi-value flat"><span class="kpi-arrow">&#8213;</span>Flat</p>
+              <p class="kpi-value flat"><span class="kpi-arrow">&#8213;</span>0%</p>
               <p class="kpi-detail">$1.0M</p>
               <p class="kpi-owner">Finance VP KPI</p>
             </div>
@@ -883,7 +1058,7 @@
               <button class="collapse-btn" id="collapseBtn-5" data-page="5" type="button" aria-label="Collapse this response">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"></polyline></svg>
               </button>
-              <p class="ai-message">Three options on the table. A is a non-starter: raising price would be self-destructive here. B and C are worth a closer look.</p>
+              <p class="ai-message">Three options.</p>
 
               <div class="options-grid" id="optionsGrid">
                 <div class="option-card" id="optionCardA" role="button" tabindex="0" aria-label="Evaluate option A">
@@ -945,6 +1120,36 @@
                     <canvas id="chart-6"></canvas>
                   </div>
                 </div>
+              </div>
+
+              <div class="breakeven-card">
+                <p class="breakeven-title">Drag P1's price. How far can it drop before the extra volume stops covering the cut?</p>
+                <div class="breakeven-track-wrap">
+                  <div class="breakeven-track" id="breakevenTrack">
+                    <div class="breakeven-track-fill" id="breakevenTrackFill"></div>
+                  </div>
+                  <div class="breakeven-marker" id="breakevenMarker">
+                    <span class="breakeven-marker-label">Breakeven $62.50</span>
+                    <span class="breakeven-marker-line"></span>
+                  </div>
+                  <input type="range" class="breakeven-slider" id="breakevenSlider" min="50" max="100" step="0.5" value="85" aria-label="P1 price">
+                </div>
+                <div class="breakeven-scale"><span>$50</span><span>$100</span></div>
+                <div class="breakeven-readout">
+                  <div class="breakeven-stat">
+                    <span class="breakeven-stat-label">Price</span>
+                    <span class="breakeven-stat-value" id="beStatPrice">$85</span>
+                  </div>
+                  <div class="breakeven-stat">
+                    <span class="breakeven-stat-label">Volume</span>
+                    <span class="breakeven-stat-value" id="beStatVolume">10 units</span>
+                  </div>
+                  <div class="breakeven-stat">
+                    <span class="breakeven-stat-label">Total Gross Profit</span>
+                    <span class="breakeven-stat-value" id="beStatProfit">$530K</span>
+                  </div>
+                </div>
+                <p class="breakeven-status positive" id="beStatus">&#9650; $90K above the Q2 baseline ($440K)</p>
               </div>
 
               <p class="note-line">Tough call: once you cut price, customers expect it.</p>
@@ -1021,10 +1226,10 @@
                 <div class="role-row silicon">
                   <p class="role-label">&#129302; Silicon Employee<span class="role-sublabel">AI Assistant</span></p>
                   <div class="role-tasks">
-                    <span>Calculate in Seconds</span>
+                    <span>Simplify the Calculations</span>
                     <span>Trace the Drivers</span>
                     <span>Run Scenarios</span>
-                    <span>Simplify and Accelerate the Decision Making Cycle</span>
+                    <span>Accelerate the Decision Making Cycle</span>
                   </div>
                   <div class="role-time-row">
                     <div class="role-time role-time--small">LLM used: Claude Opus 4.6</div>
@@ -1036,7 +1241,7 @@
                     <span>Discuss the Options</span>
                     <span>Weigh the Trade-offs</span>
                     <span>Make the Tough Calls</span>
-                    <span>Align Cross-functionally</span>
+                    <span>Align the target like Cross-functionally</span>
                   </div>
                   <div class="role-time-row">
                     <div class="role-time-old">1 Month<span class="role-time-old-note">before AI</span></div>
@@ -1594,6 +1799,72 @@
         evaluateOptions();
       }
     });
+  }
+
+  var breakevenSlider = document.getElementById('breakevenSlider');
+  if (breakevenSlider) {
+    var BE_PRICE_MIN = 50;
+    var BE_PRICE_MAX = 100;
+    var BE_BASE_PRICE = 100;
+    var BE_BASE_VOLUME = 6;
+    var BE_EXAMPLE_PRICE = 85;
+    var BE_EXAMPLE_VOLUME = 10;
+    var BE_COST_PER_UNIT = 40;
+    var BE_P2_PROFIT = 80;
+    var BE_SLOPE = (BE_EXAMPLE_VOLUME - BE_BASE_VOLUME) / (BE_EXAMPLE_PRICE - BE_BASE_PRICE);
+    var BE_BASELINE_TOTAL = (BE_BASE_PRICE - BE_COST_PER_UNIT) * BE_BASE_VOLUME + BE_P2_PROFIT;
+    // the other root of totalGP(price) = BE_BASELINE_TOTAL, solved analytically (the trivial root is BE_BASE_PRICE itself)
+    var BE_BREAKEVEN_PRICE = 62.5;
+
+    var beTrackFill = document.getElementById('breakevenTrackFill');
+    var beMarker = document.getElementById('breakevenMarker');
+    var beStatPrice = document.getElementById('beStatPrice');
+    var beStatVolume = document.getElementById('beStatVolume');
+    var beStatProfit = document.getElementById('beStatProfit');
+    var beStatus = document.getElementById('beStatus');
+
+    function beVolumeAt(price) {
+      return BE_BASE_VOLUME + BE_SLOPE * (price - BE_BASE_PRICE);
+    }
+
+    function beFormatNumber(value, decimals) {
+      var s = value.toFixed(decimals);
+      if (s.indexOf('.') !== -1) {
+        s = s.replace(/0+$/, '').replace(/\.$/, '');
+      }
+      return s;
+    }
+
+    function updateBreakeven() {
+      var price = parseFloat(breakevenSlider.value);
+      var volume = beVolumeAt(price);
+      var p1Profit = (price - BE_COST_PER_UNIT) * volume;
+      var total = p1Profit + BE_P2_PROFIT;
+      var delta = total - BE_BASELINE_TOTAL;
+
+      beStatPrice.textContent = '$' + beFormatNumber(price, 2);
+      beStatVolume.textContent = beFormatNumber(volume, 1) + ' units';
+      beStatProfit.textContent = '$' + Math.round(total) + 'K';
+
+      var roundedDelta = Math.round(delta);
+      if (roundedDelta === 0) {
+        beStatus.className = 'breakeven-status neutral';
+        beStatus.innerHTML = '&#9679; Right at the Q2 baseline ($' + BE_BASELINE_TOTAL + 'K)';
+      } else if (roundedDelta > 0) {
+        beStatus.className = 'breakeven-status positive';
+        beStatus.innerHTML = '&#9650; $' + roundedDelta + 'K above the Q2 baseline ($' + BE_BASELINE_TOTAL + 'K)';
+      } else {
+        beStatus.className = 'breakeven-status negative';
+        beStatus.innerHTML = '&#9660; $' + Math.abs(roundedDelta) + 'K below the Q2 baseline ($' + BE_BASELINE_TOTAL + 'K)';
+      }
+    }
+
+    var beBreakevenPct = (BE_BREAKEVEN_PRICE - BE_PRICE_MIN) / (BE_PRICE_MAX - BE_PRICE_MIN) * 100;
+    beTrackFill.style.width = (100 - beBreakevenPct) + '%';
+    beMarker.style.left = beBreakevenPct + '%';
+
+    breakevenSlider.addEventListener('input', updateBreakeven);
+    updateBreakeven();
   }
 
   window.addEventListener('keydown', function (e) {
