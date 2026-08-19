@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Business X-Ray</title>
-<meta name="description" content="AI-driven financial diagnostics in a few minutes.">
+<meta name="description" content="AI-driven financial diagnostics in a few steps.">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
   :root {
@@ -922,8 +922,8 @@
 <div class="app">
 
   <header class="hero">
-    <h1>The Finance Analyst and the AI Assistant</h1>
-    <p>AI-driven financial diagnostics in a few minutes</p>
+    <h1>Corporate Finance Analyst and AI Assistant</h1>
+    <p>AI-driven financial diagnostics in a few steps</p>
   </header>
 
   <div class="conversation">
@@ -933,7 +933,7 @@
       <div class="ai-avatar-row fade-in">
         <div class="ai-dot" aria-hidden="true">1</div>
         <div class="ai-content">
-          <p class="ai-message">Full Picture.</p>
+          <p class="ai-message">Full Picture from Q1 to Q2.</p>
           <div class="kpi-grid">
             <div class="kpi-card">
               <p class="kpi-label">Users</p>
@@ -971,7 +971,7 @@
               <button class="collapse-btn" id="collapseBtn-2" data-page="2" type="button" aria-label="Collapse this response">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"></polyline></svg>
               </button>
-              <p class="ai-message">2 Product lines, higher and lower profits.</p>
+              <p class="ai-message">2 Product lines with higher and lower profits.</p>
 
               <div class="chart-card">
                 <div class="chart-scroll">
@@ -989,7 +989,7 @@
     <!-- PAGE 3: comparison, Q1 vs Q2 mix and total profit -->
     <section class="turn" id="page-3">
       <div class="user-row reveal-anim" id="user-3" hidden>
-        <div class="user-question" data-page="3">Comparison</div>
+        <div class="user-question" data-page="3">Scale?</div>
       </div>
       <div class="ai-collapse-shell" id="collapseShell-3">
         <div class="ai-collapse-inner">
@@ -999,7 +999,7 @@
               <button class="collapse-btn" id="collapseBtn-3" data-page="3" type="button" aria-label="Collapse this response">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"></polyline></svg>
               </button>
-              <p class="ai-message">Q1 versus Q2. P1's volume down (80% to 60%), P2's up (20% to 40%), total profit down ($520K to $440K).</p>
+              <p class="ai-message">Business Drivers: Price x Volume. Easy!</p>
 
               <div class="table-scroll">
                 <table class="data-table">
@@ -1032,7 +1032,7 @@
     <!-- PAGE 4: drivers, Q1 vs Q2 -->
     <section class="turn" id="page-4">
       <div class="user-row reveal-anim" id="user-4" hidden>
-        <div class="user-question" data-page="4">Break down the drivers.</div>
+        <div class="user-question" data-page="4">Drivers Waterfall.</div>
       </div>
       <div class="ai-collapse-shell" id="collapseShell-4">
         <div class="ai-collapse-inner">
@@ -1060,7 +1060,7 @@
     <!-- PAGE 5: three options overview -->
     <section class="turn" id="page-5">
       <div class="user-row reveal-anim" id="user-5" hidden>
-        <div class="user-question" data-page="5">What can we do?</div>
+        <div class="user-question" data-page="5">Options?</div>
       </div>
       <div class="ai-collapse-shell" id="collapseShell-5">
         <div class="ai-collapse-inner">
@@ -1085,7 +1085,7 @@
                 </div>
                 <div class="option-card" id="optionCardC">
                   <p class="option-label">C</p>
-                  <p class="option-title">Change Sales Commission</p>
+                  <p class="option-title">Volume up: Change Sales Commission</p>
                   <p class="option-verdict">&#8594; Deep dive</p>
                 </div>
               </div>
@@ -1098,7 +1098,7 @@
     <!-- PAGE 6: Option B, promotional pricing -->
     <section class="turn" id="page-6">
       <div class="user-row reveal-anim" id="user-6" hidden>
-        <div class="user-question" data-page="6">What about pricing instead?</div>
+        <div class="user-question" data-page="6">B: Cut Price</div>
       </div>
       <div class="ai-collapse-shell" id="collapseShell-6">
         <div class="ai-collapse-inner">
@@ -1237,7 +1237,7 @@
 
               <div class="roles-grid">
                 <div class="role-row silicon">
-                  <p class="role-label">&#129302; Silicon Employee (AI Agent)<span class="role-sublabel">AI Assistant</span></p>
+                  <p class="role-label">&#129302; Silicon Employee <span class="role-sublabel">AI Assistant</span></p>
                   <div class="role-tasks">
                     <span>Simplify the Calculations</span>
                     <span>Trace the Drivers</span>
@@ -1254,7 +1254,7 @@
                     <span>Discuss the Options</span>
                     <span>Balance the Trade-offs</span>
                     <span>Make the Tough Calls</span>
-                    <span>Align the target like Cross-functionally</span>
+                    <span>Align the common goal Cross-functionally</span>
                   </div>
                   <div class="role-time-row">
                     <div class="role-time-old">1 Month<span class="role-time-old-note">before AI</span></div>
@@ -1395,6 +1395,38 @@
     }
   };
 
+  var profitBridgePlugin = {
+    id: 'profitBridge',
+    afterDatasetsDraw: function (chart) {
+      var bridge = chart.data.bridge;
+      if (!bridge) return;
+      var ctx = chart.ctx;
+      var lastIndex = chart.data.datasets.length - 1;
+      var meta = chart.getDatasetMeta(lastIndex);
+      var bar1 = meta.data[0];
+      var bar2 = meta.data[1];
+      var topY = Math.min(bar1.y, bar2.y) - 32;
+      var tickBottom = topY + 6;
+
+      ctx.save();
+      ctx.strokeStyle = bridge.color;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(bar1.x, tickBottom);
+      ctx.lineTo(bar1.x, topY);
+      ctx.lineTo(bar2.x, topY);
+      ctx.lineTo(bar2.x, tickBottom);
+      ctx.stroke();
+
+      ctx.fillStyle = bridge.color;
+      ctx.font = '800 13px system-ui, -apple-system, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'bottom';
+      ctx.fillText(bridge.label, (bar1.x + bar2.x) / 2, topY - 4);
+      ctx.restore();
+    }
+  };
+
   function renderChart2Unit() {
     var ctx = document.getElementById('chart-2-unit').getContext('2d');
     var muted = cssVar('--text-secondary') || '#55555b';
@@ -1473,6 +1505,7 @@
       data: {
         labels: ['Q1', 'Q2'],
         totalLabels: ['Profit: $520K', 'Profit: $440K'],
+        bridge: { label: '-15%', color: colors.red },
         segmentFontSize: 9,
         segmentLabels: [
           [
@@ -1512,7 +1545,7 @@
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        layout: { padding: { top: 28 } },
+        layout: { padding: { top: 50 } },
         scales: {
           x: {
             stacked: true,
@@ -1540,7 +1573,7 @@
           }
         }
       },
-      plugins: [segmentLabelPlugin, totalLabelPlugin, scissorLinePlugin]
+      plugins: [segmentLabelPlugin, totalLabelPlugin, scissorLinePlugin, profitBridgePlugin]
     });
   }
 
@@ -1677,10 +1710,10 @@
   var steps = [2, 3, 4, 5, 6, 7, 8];
   var questionText = {
     2: { preview: 'What...', full: 'What changed?' },
-    3: { preview: 'Comparison...', full: 'Comparison' },
-    4: { preview: 'Break...', full: 'Break down the drivers.' },
-    5: { preview: 'What...', full: 'What can we do?' },
-    6: { preview: 'What...', full: 'Option B' },
+    3: { preview: 'Scale...', full: 'Scale?' },
+    4: { preview: 'Drivers...', full: 'Drivers Waterfall.' },
+    5: { preview: 'Options...', full: 'Options?' },
+    6: { preview: 'B...', full: 'B: Cut Price' },
     7: { preview: 'And...', full: 'And Option C?' },
     8: { preview: 'Why...', full: 'Why does this matter?' }
   };
