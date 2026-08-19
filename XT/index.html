@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Business X-Ray</title>
-<meta name="description" content="AI-driven financial diagnostics in 3 minutes.">
+<meta name="description" content="AI-driven financial diagnostics in a few minutes.">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
   :root {
@@ -271,6 +271,17 @@
     line-height: 1.4;
   }
 
+  .kpi-owner {
+    margin: 10px 0 0;
+    padding-top: 8px;
+    border-top: 1px dashed var(--border);
+    font-size: 0.66rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
   /* ---------- tables ---------- */
 
   .table-scroll {
@@ -363,6 +374,10 @@
 
   .chart-wrap.chart-wrap--compact {
     min-width: 260px;
+  }
+
+  .chart-wrap.chart-wrap--wide {
+    min-width: 580px;
   }
 
   /* ---------- note line and Or divider ---------- */
@@ -581,6 +596,12 @@
     white-space: nowrap;
   }
 
+  .role-time.role-time--small {
+    font-size: 1.05rem;
+    line-height: 1.3;
+    white-space: normal;
+  }
+
   .role-row.silicon .role-time { color: var(--blue); }
   .role-row.carbon .role-time { color: var(--orange); }
 
@@ -731,16 +752,19 @@
               <p class="kpi-label">Users</p>
               <p class="kpi-value up"><span class="kpi-arrow">&#9650;</span>+50%</p>
               <p class="kpi-detail">1,500</p>
+              <p class="kpi-owner">Sales VP KPI</p>
             </div>
             <div class="kpi-card">
               <p class="kpi-label">Revenue</p>
               <p class="kpi-value flat"><span class="kpi-arrow">&#8213;</span>Flat</p>
               <p class="kpi-detail">$1.0M</p>
+              <p class="kpi-owner">Finance VP KPI</p>
             </div>
             <div class="kpi-card">
               <p class="kpi-label">Profit</p>
               <p class="kpi-value down"><span class="kpi-arrow">&#9660;</span>-15%</p>
               <p class="kpi-detail">Q1 $520K &rarr; Q2 $440K</p>
+              <p class="kpi-owner">Finance VP KPI</p>
             </div>
           </div>
         </div>
@@ -788,7 +812,7 @@
               <button class="collapse-btn" id="collapseBtn-3" data-page="3" type="button" aria-label="Collapse this response">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"></polyline></svg>
               </button>
-              <p class="ai-message">Q1 versus Q2. P1 volume dropped (80% to 60%), P2's grew from 20% to 40%, and total profit fell from $520K to $440K.</p>
+              <p class="ai-message">Q1 versus Q2. P1's volume dropped (80% to 60%), P2's grew (20% to 40%), total profit fell ($520K to $440K).</p>
 
               <div class="chart-card">
                 <div class="chart-scroll">
@@ -835,7 +859,7 @@
 
               <div class="chart-card">
                 <div class="chart-scroll">
-                  <div class="chart-wrap">
+                  <div class="chart-wrap chart-wrap--wide">
                     <canvas id="chart-4"></canvas>
                   </div>
                 </div>
@@ -859,7 +883,7 @@
               <button class="collapse-btn" id="collapseBtn-5" data-page="5" type="button" aria-label="Collapse this response">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"></polyline></svg>
               </button>
-              <p class="ai-message">Three options on the table. A is a non-starter, raising price would be self-destructive here. B and C are worth a closer look.</p>
+              <p class="ai-message">Three options on the table. A is a non-starter: raising price would be self-destructive here. B and C are worth a closer look.</p>
 
               <div class="options-grid" id="optionsGrid">
                 <div class="option-card" id="optionCardA" role="button" tabindex="0" aria-label="Evaluate option A">
@@ -869,12 +893,12 @@
                 </div>
                 <div class="option-card" id="optionCardB">
                   <p class="option-label">B</p>
-                  <p class="option-title">Cut Price (Promo)</p>
+                  <p class="option-title">Cut Price (Promotion)</p>
                   <p class="option-verdict">&#8594; Deep dive</p>
                 </div>
                 <div class="option-card" id="optionCardC">
                   <p class="option-label">C</p>
-                  <p class="option-title">Sales Commission</p>
+                  <p class="option-title">Change Sales Commission</p>
                   <p class="option-verdict">&#8594; Deep dive</p>
                 </div>
               </div>
@@ -998,21 +1022,21 @@
                   <p class="role-label">&#129302; Silicon Employee<span class="role-sublabel">AI Assistant</span></p>
                   <div class="role-tasks">
                     <span>Calculate in Seconds</span>
-                    <span>Trace the drivers</span>
-                    <span>Run scenarios</span>
+                    <span>Trace the Drivers</span>
+                    <span>Run Scenarios</span>
                     <span>Simplify and Accelerate the Decision Making Cycle</span>
                   </div>
                   <div class="role-time-row">
-                    <div class="role-time">LLM used: Claude Opus4.6</div>
+                    <div class="role-time role-time--small">LLM used: Claude Opus 4.6</div>
                   </div>
                 </div>
                 <div class="role-row carbon">
                   <p class="role-label">&#128100;&#8205;&#128188; Carbon Employee<span class="role-sublabel">Finance Analyst</span></p>
                   <div class="role-tasks">
                     <span>Discuss the Options</span>
-                    <span>Weight the trade-offs</span>
+                    <span>Weigh the Trade-offs</span>
                     <span>Make the Tough Calls</span>
-                    <span>Cross-functionally Empower</span>
+                    <span>Align Cross-functionally</span>
                   </div>
                   <div class="role-time-row">
                     <div class="role-time-old">1 Month<span class="role-time-old-note">before AI</span></div>
@@ -1022,10 +1046,10 @@
                 </div>
               </div>
 
-              <p class="bottom-line">AI deep-dives through Conversation.</p>
+              <p class="bottom-line">AI deep-dives through conversation.</p>
 
               <div class="contact">
-                <p class="name">Let us Connect!</p>
+                <p class="name">Let us connect!</p>
                 <a class="gh-link" href="https://github.com/yixuan116" target="_blank" rel="noopener noreferrer">
                   <svg width="18" height="18" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
                   <span>github.com/yixuan116</span>
@@ -1398,13 +1422,8 @@
     renderWaterfall(
       'chart-4',
       ['Q1 Gross Profit', 'P1 Volume', 'P2 Volume', 'Q2 Gross Profit'],
-      ['$520K', '-$120K', '+$40K', '$440K'],
-      [
-        '',
-        ['P1: -2 units × $60', '$360K - $480K'],
-        ['P2: +4 units × $10', '$80K - $40K'],
-        ''
-      ],
+      ['$520K', '-$120K ($360K - $480K)', '+$40K ($80K - $40K)', '$440K'],
+      ['', 'P1: -2 units × $60', 'P2: +4 units × $10', ''],
       [[0, 520], [400, 520], [400, 440], [0, 440]],
       [colors.blue, colors.red, colors.green, colors.blue],
       640
@@ -1414,7 +1433,7 @@
   function renderChart6() {
     renderWaterfall(
       'chart-6',
-      ['Q2 GP', 'Price Effect', 'Volume Effect', 'Opt B GP'],
+      ['Q2 Gross Profit', 'Price Effect', 'Volume Effect', 'Opt B Gross Profit'],
       ['440', '-90', '+180', '530'],
       ['', 'P1: 6 units × -$15', 'P1: +4 units × $45', ''],
       [[0, 440], [350, 440], [350, 530], [0, 530]],
@@ -1443,7 +1462,7 @@
     3: { preview: 'Comparison...', full: 'Comparison' },
     4: { preview: 'Break...', full: 'Break down the drivers.' },
     5: { preview: 'What...', full: 'What can we do?' },
-    6: { preview: 'What...', full: 'What about pricing instead?' },
+    6: { preview: 'What...', full: 'Option B' },
     7: { preview: 'And...', full: 'And Option C?' },
     8: { preview: 'Why...', full: 'Why does this matter?' }
   };
@@ -1572,7 +1591,6 @@
     optionCardA.addEventListener('keydown', function (e) {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
-        e.stopPropagation();
         evaluateOptions();
       }
     });
