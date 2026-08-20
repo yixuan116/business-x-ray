@@ -8,7 +8,7 @@ slider. One turn at a time, styled like a live conversation with an AI assistant
 
 Pure HTML, CSS, and JavaScript. No build step, no frameworks. Charts via [Chart.js](https://www.chartjs.org/).
 
-**Live demo:** [yixuan116.github.io/business-x-ray/XT/](https://yixuan116.github.io/business-x-ray/XT/)
+**Live demo:** [yixuan116.github.io/business-x-ray/price-volume-mix-waterfall/](https://yixuan116.github.io/business-x-ray/price-volume-mix-waterfall/)
 
 ## Screenshots
 
@@ -51,7 +51,7 @@ after that step, expanded down through the prior ones.
 
 ```
 business-x-ray/
-  XT/
+  price-volume-mix-waterfall/
     index.html        the complete demo, one file
     Pictures/          QR code images used on the contact section
     screenshots/
@@ -60,10 +60,10 @@ business-x-ray/
 
 ## Running locally
 
-Open `XT/index.html` directly in a browser, or serve the folder:
+Open `price-volume-mix-waterfall/index.html` directly in a browser, or serve the folder:
 
 ```
-cd XT
+cd price-volume-mix-waterfall
 python3 -m http.server 8000
 ```
 
